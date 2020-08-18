@@ -12,7 +12,7 @@ using namespace std;
 int basicinput()
 {
 	string classification;
-	int cnum, sem, free, extra, tot;
+	int sem, free, tot, cnum, extra;
 
 	do
 	{
@@ -65,12 +65,75 @@ int basicinput()
 	return tot;
 }
 
+bool WTKLH()
+{
+	char a;
+	do
+	{
+		cout << "\nDo you want to know your Latin Honors(Summa, Magna, Cum Laude) status?( Y or N)" << endl;
+		cin >> a;
+	} while (a != 'Y' && a != 'N');
+
+	if (a == 'Y')
+		return true;
+	else
+		return false;
+
+}
+
+string LatinHonors(double gpaa, double scale, char whate)
+{
+	double sum, mag, cum, sscale;
+	string wstat;
+	if (whate == 'W')
+	{
+		sscale = scale - 1;
+		wstat = "weighted";
+	}
+	else if (whate == 'U')
+	{
+		wstat == "unweighted";
+	}
+	do
+	{
+		cout << "What's the lowest possible GPA needed on a " << wstat << " " << sscale << ".0 scale to get Summa Cum Laude?" << endl;
+		cin >> sum;
+	} while (sum <= 0 || sum >= scale);
+	do
+	{
+		cout << "What's the lowest possible GPA needed on a " << wstat << " " << sscale << ".0 scale to get Magna Cum Laude?" << endl;
+		cin >> mag;
+	} while (mag <= 0 || mag >= sum);
+	do
+	{
+		cout << "What's the lowest possible GPA needed on a " << wstat << " " << sscale << ".0 scale to get Cum Laude?" << endl;
+		cin >> cum;
+	} while (cum <= 0 || cum >= mag);
+
+	if (gpaa >= sum)
+	{
+		return "Summa Cum Laude";
+	}
+	else if (gpaa >= mag)
+	{
+		return "Magna Cum Laude";
+	}
+	else if (gpaa >= cum)
+	{
+		return "Cum Laude";
+	}
+	else
+	{
+		return "with no honors";
+	}
+}
+
 class GPA
 {
 public:
-	char weight, colshon;
 	int col, hon, reg;
 	float bigtot = 0.0f;
+	char weight, colshon;
 	vector <int> colgrades;
 	vector <int> hongrades;
 	vector <int> reggrades;
@@ -314,87 +377,87 @@ public:
 			}
 			else if (colshon == 'Y')
 			{
+			  do
+			  {
+				  cout << "How many of your " << ccount << " total classes were Above Level?( 0 - " << ccount << " ): " << endl;
+				  cin >> hon;
+			  } while (hon < 0 || hon > ccount);
+
+			  reg = ccount - hon;
+			  cout << endl;
+			for (int i = 0; i < hon; i++)
+			{
+				int c;
 				do
 				{
-					cout << "How many of your " << ccount << " total classes were Above Level?( 0 - " << ccount << " ): " << endl;
-					cin >> hon;
-				} while (hon < 0 || hon > ccount);
+					cout << "Enter grade in Above-Level/Honors class #" << (i + 1) << "(whole integer):  ";
+					cin >> c;
+				} while (c < 0);
+				hongrades.emplace_back(c);
+			}
+			cout << endl;
+			for (int i = 0; i < reg; i++)
+			{
+				int c;
+				do
+				{
+					cout << "Enter grade in On-Level class #" << (i + 1) << "(whole integer):  ";
+					cin >> c;
+				} while (c < 0);
+				reggrades.emplace_back(c);
+			}
 
-				reg = ccount - hon;
-				cout << endl;
-				for (int i = 0; i < hon; i++)
+			for (int d = 0; d < hon; d++)
+			{
+				if (hongrades[d] >= 90)
 				{
-					int c;
-					do
-					{
-						cout << "Enter grade in Above-Level/Honors class #" << (i + 1) << "(whole integer):  ";
-						cin >> c;
-					} while (c < 0);
-					hongrades.emplace_back(c);
+					bigtot += scaler;
 				}
-				cout << endl;
-				for (int i = 0; i < reg; i++)
+				else if (hongrades[d] >= 80)
 				{
-					int c;
-					do
-					{
-						cout << "Enter grade in On-Level class #" << (i + 1) << "(whole integer):  ";
-						cin >> c;
-					} while (c < 0);
-					reggrades.emplace_back(c);
+					bigtot += (scaler - 1);
 				}
-
-				for (int d = 0; d < hon; d++)
+				else if (hongrades[d] >= 75)
 				{
-					if (hongrades[d] >= 90)
-					{
-						bigtot += scaler;
-					}
-					else if (hongrades[d] >= 80)
-					{
-						bigtot += (scaler - 1);
-					}
-					else if (hongrades[d] >= 75)
-					{
-						bigtot += (scaler - 2);
-					}
-					else if (hongrades[d] >= 70)
-					{
-						bigtot += (scaler - 3);
-					}
-					else
-					{
-						bigtot += 0;
-					}
+					bigtot += (scaler - 2);
 				}
-				for (int d = 0; d < reg; d++)
+				else if (hongrades[d] >= 70)
 				{
-					if (reggrades[d] >= 90)
-					{
-						bigtot += (scaler - 1);
-					}
-					else if (reggrades[d] >= 80)
-					{
-						bigtot += (scaler - 2);
-					}
-					else if (reggrades[d] >= 75)
-					{
-						bigtot += (scaler - 3);
-					}
-					else if (reggrades[d] >= 70)
-					{
-						bigtot += (scaler - 4);
-					}
-					else
-					{
-						bigtot += 0;
-					}
+					bigtot += (scaler - 3);
 				}
+				else
+				{
+					bigtot += 0;
+				}
+			}
+			for (int d = 0; d < reg; d++)
+			{
+				if (reggrades[d] >= 90)
+				{
+					bigtot += (scaler - 1);
+				}
+				else if (reggrades[d] >= 80)
+				{
+					bigtot += (scaler - 2);
+				}
+				else if (reggrades[d] >= 75)
+				{
+					bigtot += (scaler - 3);
+				}
+				else if (reggrades[d] >= 70)
+				{
+					bigtot += (scaler - 4);
+				}
+				else
+				{
+					bigtot += 0;
+				}
+			}
 			}
 		}
 		else if (weight == 'U')
 		{
-			for (int i = 0; i < ccount; i++)
+			for(int i = 0; i < ccount; i++)
 			{
 				int c;
 				do
@@ -451,15 +514,30 @@ public:
 		return (bigtot / double(ccount));
 	}
 
+	char TellWeight()
+	{
+		return weight;
+	}
+
 };
 
 int main()
 {
-	GPA u;
 	int totalclasses = basicinput();
+	GPA u;
 	float scale = u.SecondInput();
 	double gpaa = u.Calc(totalclasses, scale);
+	bool want = WTKLH();
+	char wate = u.TellWeight();
+	string latstat;
+	if (want)
+	{
+		latstat = LatinHonors(gpaa, scale, wate);
+	}
 	cout << "\nGrade Point Average:  " << gpaa << "\n";
-
+	if (want)
+	{
+		cout << "\nWith the inputed information, with this GPA you would graduate " << latstat << "\n";
+	}
 	cin.get();
 }
