@@ -1,0 +1,182 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int basicinput()
+{
+	string classification;
+	int sem, free, tot, cnum;
+	do
+	{
+		cout << "What is your most recent classification?( Freshamn, Sophomore, Junior, Senior):" << endl;
+		cin >> classification;
+	} while ((classification != "Freshman") && (classification != "Sophomore") && (classification != "Junior") && (classification != "Senior"));
+	
+	cout << endl;
+
+	if (classification == "Freshman")
+	{
+		cnum = 0;
+	}
+	else if (classification == "Sophomore")
+	{
+		cnum = 1;
+	}
+	else if (classification == "Junior")
+	{
+		cnum = 2;
+	}
+	else
+	{
+		cnum = 3;
+	}
+
+	do
+	{
+		cout << "What is the most semesters you completed that year?( 1 or 2 ):" << endl;
+		cin >> sem;
+	} while (sem != 1 && sem != 2);
+
+	cout << endl;
+
+	do
+	{
+		cout << "How many late arrials, early release, free, and PASS/FAIL classes have you had ?( 0 to 8 ):" << endl;
+		cin >> free;
+	} while (free < 0 || free > 8);
+	
+	cout <<  endl;
+
+	tot = (7 * ((cnum * 2) + sem)) - free;
+	return tot;
+
+}
+
+string GradC(double gpaa)
+{
+	string honors;
+	if (gpaa >= 6.5)
+	{
+		honors = "Suma Cum Laude";
+	}
+	else if (gpaa >= 6.25)
+	{
+		honors = "Magna Cum Laude";
+	}
+	else if (gpaa >= 6.0)
+	{
+		honors = "Cum Laude";
+	}
+	else
+	{
+		honors = "with no honors";
+	}
+	return honors;
+}
+
+class GPA
+{
+public:
+	int k,l,bigtot;
+	vector <int> kgrades;
+	vector <int> lgrades;
+
+	double Calc(int ccount)
+	{
+		do
+		{
+			cout << "How many of your " << ccount << " total classes were K-Level?( 0 - " << ccount << " ): " << endl;
+			cin >> k;
+		} while (k < 0 || k > ccount);
+		
+		l = ccount - k;
+		cout << endl;
+
+		for (int i = 0; i < k; i++)
+		{
+			int c;
+			do
+			{
+				cout << "Enter grade in K class #" << (i + 1) << "(whole integer):  ";
+				cin >> c;
+			} while (c < 0);
+			kgrades.emplace_back(c);
+		}
+
+		for (int i = 0; i < l; i++)
+		{
+			int c;
+			do
+			{
+				cout << "Enter grade in L class #" << (i + 1) << "(whole integer):  ";
+				cin >> c;
+			} while (c < 0);
+			lgrades.emplace_back(c);
+		}
+
+		for (int d = 0; d < k; d++)
+		{
+			if (kgrades[d] >= 90)
+			{
+				bigtot += 7;
+			}
+			else if (kgrades[d] >= 80)
+			{
+				bigtot += 6;
+			}
+			else if (kgrades[d] >= 75)
+			{
+				bigtot += 5;
+			}
+			else if (kgrades[d] >= 70)
+			{
+				bigtot += 4;
+			}
+			else
+			{
+				bigtot += 0;
+			}
+		}
+
+		for (int z = 0; z < l; z++)
+		{
+			if (lgrades[z] >= 90)
+			{
+				bigtot += 6;
+			}
+			else if (lgrades[z] >= 80)
+			{
+				bigtot += 5;
+			}
+			else if (lgrades[z] >= 75)
+			{
+				bigtot += 4;
+			}
+			else if (lgrades[z] >= 70)
+			{
+				bigtot += 3;
+			}
+			else
+			{
+				bigtot += 0;
+			}
+		}
+		return (bigtot / double(ccount));
+	}
+};
+
+
+
+int main()
+{	
+	int totalclasses = basicinput();
+
+	GPA u;
+	double gpaaa = u.Calc(totalclasses);
+	cout << "\nGrade Point Average in CFISD:  " << gpaaa <<"\n\n";
+	cout << "In CFISD, you would graduate " << GradC(gpaaa) << " with this gpa.\n\n";
+	
+	cin.get();
+}
